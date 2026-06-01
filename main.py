@@ -1,11 +1,12 @@
 from utils.limpar_tela import limpar_tela
 from utils.proximo import proximo
 from utils.string_vazia import string_vazia
-from services import ClienteService
+from services import ClienteService, EntregadorService
 
 import re
 
 cliente_service = ClienteService()
+entregador_service = EntregadorService()
 
 while True:
     try:
@@ -14,15 +15,16 @@ while True:
         print("###########################################\n")
 
         print("1. Cadastrar clientes")
+        print("2. Cadastrar entregadores")
         print("0. Sair")
 
         opcao = int(input("Opção: "))
 
+        limpar_tela()
+
         match opcao:
             case 1:
                 while True:
-                    limpar_tela()
-
                     print("Informe os campos a seguir.")
 
                     cpf = input("Cpf: ")
@@ -74,6 +76,44 @@ while True:
 
                     limpar_tela()
                     print("Cliente cadastrado!")
+                    proximo()
+
+                    break
+
+            case 2:
+                while True:
+                    print("Informe os campos a seguir.")
+
+                    cnh = input("Número da CNH: ")
+
+                    if string_vazia(cnh):
+                        print("Número da CNH não informado.")
+                        proximo()
+                        continue
+
+                    if len(cnh) != 11:
+                        print("O número da CNH deve conter 11 números.")
+                        proximo()
+                        continue
+
+                    nome = input("Nome: ")
+
+                    if string_vazia(nome):
+                        print("Nome do entregador não informado.")
+                        proximo()
+                        continue
+
+                    veiculo = input("Veículo: ")
+
+                    if string_vazia(veiculo):
+                        print("Veículo não informado.")
+                        proximo()
+                        continue
+
+                    entregador_service.cadastrar(cnh, nome, veiculo)
+
+                    limpar_tela()
+                    print("Entregador cadastrado!")
                     proximo()
 
                     break
