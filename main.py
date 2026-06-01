@@ -7,8 +7,6 @@ import re
 
 cliente_service = ClienteService()
 
-import re
-
 while True:
     try:
         print("###########################################")
