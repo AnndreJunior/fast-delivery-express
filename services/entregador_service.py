@@ -17,3 +17,14 @@ class EntregadorService:
 
         entregador = Entregador(nome, veiculo, cnh)
         self.__entregadores.append(entregador)
+
+    def encontrar_pela_cnh(self, cnh: str):
+        entregador = next(
+            (entregador for entregador in self.__entregadores if entregador.cnh == cnh),
+            None,
+        )
+
+        if entregador is None:
+            raise Exception(f"O entregador com a CNH {cnh} não está cadastrado.")
+
+        return entregador

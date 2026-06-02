@@ -1,12 +1,13 @@
 from utils.limpar_tela import limpar_tela
 from utils.proximo import proximo
 from utils.string_vazia import string_vazia
-from services import ClienteService, EntregadorService
+from services import ClienteService, EntregadorService, PedidoService
 
 import re
 
 cliente_service = ClienteService()
 entregador_service = EntregadorService()
+pedido_service = PedidoService()
 
 while True:
     try:
@@ -16,6 +17,7 @@ while True:
 
         print("1. Cadastrar clientes")
         print("2. Cadastrar entregadores")
+        print("3. Cadastrar pedido")
         print("0. Sair")
 
         opcao = int(input("Opção: "))
@@ -114,6 +116,42 @@ while True:
 
                     limpar_tela()
                     print("Entregador cadastrado!")
+                    proximo()
+
+                    break
+
+            case 3:
+                while True:
+                    print("Informe os campos relacionados a entrega.")
+
+                    cpf_cliente = input("Informe o CPF do cliente: ")
+
+                    if string_vazia(cpf_cliente):
+                        print("Informe o CPF do cliente.")
+                        proximo()
+                        continue
+
+                    cliente = cliente_service.encontrar_pelo_cpf(cpf_cliente)
+
+                    cnh_entregador = input("Informe a CNH do entregador: ")
+
+                    if string_vazia(cnh_entregador):
+                        print("Informe o código da CNH do entregador.")
+                        proximo()
+                        continue
+
+                    entregador = entregador_service.encontrar_pela_cnh(cnh_entregador)
+
+                    peso = float(input("Peso (kg): "))
+                    distancia = float(input("Distância (km): "))
+                    tipo_de_entrega = input("Informe o tipo de entrega: ")
+
+                    pedido_service.cadastrar(
+                        cliente, entregador, peso, distancia, tipo_de_entrega
+                    )
+
+                    limpar_tela()
+                    print("Pedido cadastrado!")
                     proximo()
 
                     break
