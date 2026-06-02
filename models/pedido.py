@@ -10,6 +10,12 @@ class PedidoStatus(Enum):
     CANCELADO = 4
 
 
+class TipoEntrega(Enum):
+    ENTREGA_COMUM = 1
+    ENTREGA_EXPRESSA = 2
+    ENTREGA_PREMIUM = 3
+
+
 class Pedido:
     def __init__(
         self,
@@ -18,8 +24,9 @@ class Pedido:
         entregador: Entregador,
         peso: float,
         distancia: float,
-        tipo_entrega: str,
+        tipo_entrega: TipoEntrega,
         status: PedidoStatus,
+        frete: float,
     ):
         self.__codigo = codigo
         self.__cliente = cliente
@@ -28,6 +35,7 @@ class Pedido:
         self.__distancia = distancia
         self.__tipo_entrega = tipo_entrega
         self.__status = status
+        self.__frete = frete
 
     @property
     def codigo(self):
@@ -56,3 +64,7 @@ class Pedido:
     @property
     def status(self):
         return self.__status
+
+    @property
+    def frete(self):
+        return self.__frete
