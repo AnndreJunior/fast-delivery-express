@@ -1,13 +1,13 @@
-from enum import Enum, auto
+from enum import Enum
 from .cliente import Cliente
 from .entregador import Entregador
 
 
 class PedidoStatus(Enum):
-    PREPARACAO = auto()
-    SAIU_PARA_ENTREGA = auto()
-    ENTREGUE = auto()
-    CANCELADO = auto()
+    PREPARACAO = 1
+    SAIU_PARA_ENTREGA = 2
+    ENTREGUE = 3
+    CANCELADO = 4
 
 
 class Pedido:
