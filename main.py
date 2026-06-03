@@ -2,6 +2,7 @@ from utils.limpar_tela import limpar_tela
 from utils.proximo import proximo
 from utils.string_vazia import string_vazia
 from services import ClienteService, EntregadorService, PedidoService
+from models import TipoEntrega
 
 import re
 
@@ -144,10 +145,35 @@ while True:
 
                     peso = float(input("Peso (kg): "))
                     distancia = float(input("Distância (km): "))
-                    tipo_de_entrega = input("Informe o tipo de entrega: ")
+
+                    print("\nInforme o tipo de entrega.")
+
+                    tipo_entrega_exibicao = {
+                        TipoEntrega.ENTREGA_COMUM: "Entrega comum",
+                        TipoEntrega.ENTREGA_EXPRESSA: "Entrega expressa",
+                        TipoEntrega.ENTREGA_PREMIUM: "Entrega premium",
+                    }
+                    tipo_entrega_opcoes = {
+                        tipo_entrega.value for tipo_entrega in TipoEntrega
+                    }
+
+                    for tipo_entrega in TipoEntrega:
+                        print(
+                            f"{tipo_entrega.value}. {tipo_entrega_exibicao[tipo_entrega]}"
+                        )
+
+                    opcao_tipo_de_entrega = int(input("Opção: "))
+                    if opcao_tipo_de_entrega not in tipo_entrega_opcoes:
+                        print("Opção inválida para o tipo de entrega.")
+                        proximo()
+                        continue
 
                     pedido_service.cadastrar(
-                        cliente, entregador, peso, distancia, tipo_de_entrega
+                        cliente,
+                        entregador,
+                        peso,
+                        distancia,
+                        TipoEntrega(opcao_tipo_de_entrega),
                     )
 
                     limpar_tela()
