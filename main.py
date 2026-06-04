@@ -2,6 +2,7 @@ from utils.limpar_tela import limpar_tela
 from utils.proximo import proximo
 from utils.string_vazia import string_vazia
 from utils.menu import exibir_opcoes_de_entrega
+from utils.checar_padrao import padrao_valido
 from services import ClienteService, EntregadorService, PedidoService
 from models import TipoEntrega, PedidoStatus
 
@@ -40,9 +41,9 @@ while True:
                         print("Cpf não informado.")
                         continue
 
-                    cpf_regex = r"^\d{3}\.\d{3}\.\d{3}\-\d{2}$"
-                    cpf_valido = re.search(cpf_regex, cpf)
-                    if not cpf_valido:
+                    if not padrao_valido(
+                        valor=cpf, padrao=r"^\d{3}\.\d{3}\.\d{3}\-\d{2}$"
+                    ):
                         limpar_tela()
                         print(
                             "Cpf inválido, ele deve seguir o seguinte padrão: XXX.XXX.XXX-XX."
@@ -67,9 +68,9 @@ while True:
                         print("Telefone não informado.")
                         continue
 
-                    telefone_regex = r"^\(\d{2}\) \d{4,5}-\d{4}$"
-                    telefone_valido = re.search(telefone_regex, telefone)
-                    if not telefone_valido:
+                    if not padrao_valido(
+                        valor=telefone, padrao=r"^\(\d{2}\) \d{4,5}-\d{4}$"
+                    ):
                         limpar_tela()
                         print(
                             "Telefone inválido, ele deve seguir o seguinte formato: (XX) 9XXXX-XXXX."
