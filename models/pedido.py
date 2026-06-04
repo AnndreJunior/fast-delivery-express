@@ -1,6 +1,5 @@
 from enum import Enum
-from .cliente import Cliente
-from .entregador import Entregador
+from .pessoa import Cliente, Entregador
 
 
 class PedidoStatus(Enum):

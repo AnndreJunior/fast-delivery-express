@@ -1,5 +1,5 @@
 from typing import List
-from models.entregador import Entregador
+from models.pessoa import Entregador
 
 
 class EntregadorService:
