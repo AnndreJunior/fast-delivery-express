@@ -3,7 +3,7 @@ from utils.proximo import proximo
 from utils.string_vazia import string_vazia
 from utils.menu import exibir_opcoes_de_entrega
 from services import ClienteService, EntregadorService, PedidoService
-from models import TipoEntrega
+from models import TipoEntrega, PedidoStatus
 
 import re
 
@@ -21,6 +21,7 @@ while True:
         print("1. Cadastrar clientes")
         print("2. Cadastrar entregadores")
         print("3. Cadastrar pedido")
+        print("4. Atualizar pedido")
         print("0. Sair")
 
         opcao = int(input("Opção: "))
@@ -188,6 +189,64 @@ while True:
 
                 limpar_tela()
                 print("Pedido cadastrado!")
+                proximo()
+
+            case 4:
+                status_exibicao = {
+                    PedidoStatus.SAIU_PARA_ENTREGA: "Saiu para entrega",
+                    PedidoStatus.PREPARACAO: "Em preparação",
+                    PedidoStatus.ENTREGUE: "Entregue",
+                    PedidoStatus.CANCELADO: "Cancelado",
+                }
+                pedidos = pedido_service.listar()
+
+                if not pedidos:
+                    print("Nenhum pedido cadastrado.")
+                    proximo()
+                    continue
+
+                for pedido in pedidos:
+                    print(f"Código: {pedido.codigo}")
+                    print(f"Peso: {pedido.peso} kg")
+                    print(f"Distância: {pedido.distancia} km")
+                    print(f"Frete: R${pedido.frete}")
+                    print(f"Situação: {status_exibicao[pedido.status]}")
+                    print(
+                        "--------------------------------------------------------------"
+                    )
+
+                print("")
+                while True:
+                    codigo = input("Código do pedido: ")
+                    if string_vazia(codigo):
+                        print("Informe o código do pedido.")
+                        continue
+                    break
+
+                pedido = pedido_service.encontrar_pedido_pelo_codigo(codigo)
+
+                limpar_tela()
+
+                while True:
+                    print("Deseja atualizar a situação ou cancelar?")
+                    print("1. Atualizar")
+                    print("2. Cancelar")
+                    opcao = int(input("Opção: "))
+
+                    limpar_tela()
+
+                    if opcao == 1:
+                        pedido_service.atualizar_status(pedido)
+                        print(f"Situação do pedido {codigo} atualizado com sucesso!")
+                        print(f"Situação atual: {status_exibicao[pedido.status]}.")
+                    elif opcao == 2:
+                        pedido_service.cancelar(pedido)
+                        print(f"Pedido {codigo} cancelado.")
+                    else:
+                        print("Opção inválida.")
+                        continue
+                    break
+
                 proximo()
 
             case 0:

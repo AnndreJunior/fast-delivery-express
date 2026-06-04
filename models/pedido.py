@@ -68,3 +68,7 @@ class Pedido:
     @property
     def frete(self):
         return self.__frete
+
+    @status.setter
+    def status(self, status: PedidoStatus):
+        self.__status = status
