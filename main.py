@@ -1,5 +1,11 @@
 from utils.string_vazia import string_vazia
-from utils.menu import exibir_opcoes_de_entrega, limpar_tela, proximo, exibir_feedback
+from utils.menu import (
+    exibir_opcoes_de_entrega,
+    limpar_tela,
+    proximo,
+    exibir_feedback,
+    obter_input_valido,
+)
 from utils.checar_padrao import padrao_valido
 from services import ClienteService, EntregadorService, PedidoService
 from models import TipoEntrega, PedidoStatus
@@ -31,54 +37,27 @@ while True:
             case 1:
                 print("Informe os campos a seguir.")
 
-                while True:
-                    cpf = input("Cpf: ")
+                cpf = obter_input_valido(
+                    prompt="Cpf: ",
+                    erro_vazio="Cpf não informado.",
+                    regex=r"^\d{3}\.\d{3}\.\d{3}\-\d{2}$",
+                    erro_regex="Cpf inválido, ele deve seguir o seguinte padrão: XXX.XXX.XXX-XX.",
+                )
 
-                    if string_vazia(cpf):
-                        exibir_feedback("Cpf não informado.", pausar=False)
-                        continue
+                nome = obter_input_valido(
+                    prompt="Nome: ", erro_vazio="Nome não informado."
+                )
 
-                    if not padrao_valido(
-                        valor=cpf, padrao=r"^\d{3}\.\d{3}\.\d{3}\-\d{2}$"
-                    ):
-                        exibir_feedback(
-                            "Cpf inválido, ele deve seguir o seguinte padrão: XXX.XXX.XXX-XX.",
-                            pausar=False,
-                        )
-                        continue
-                    break
+                telefone = obter_input_valido(
+                    prompt="Telefone: ",
+                    erro_vazio="Telefone não informado.",
+                    regex=r"^\(\d{2}\) \d{4,5}-\d{4}$",
+                    erro_regex="Telefone inválido, ele deve seguir o seguinte formato: (XX) 9XXXX-XXXX.",
+                )
 
-                while True:
-                    nome = input("Nome: ")
-
-                    if string_vazia(nome):
-                        exibir_feedback("Nome não informado.", pausar=False)
-                        continue
-                    break
-
-                while True:
-                    telefone = input("Telefone: ")
-
-                    if string_vazia(telefone):
-                        exibir_feedback("Telefone não informado.", pausar=False)
-                        continue
-
-                    if not padrao_valido(
-                        valor=telefone, padrao=r"^\(\d{2}\) \d{4,5}-\d{4}$"
-                    ):
-                        exibir_feedback(
-                            "Telefone inválido, ele deve seguir o seguinte formato: (XX) 9XXXX-XXXX.",
-                            pausar=False,
-                        )
-                        continue
-                    break
-
-                while True:
-                    endereco = input("Endereço: ")
-                    if string_vazia(endereco):
-                        exibir_feedback("Endereço não informado.", pausar=False)
-                        continue
-                    break
+                endereco = obter_input_valido(
+                    prompt="Endereço: ", erro_vazio="Endereço não informado."
+                )
 
                 cliente_service.cadastrar(cpf, nome, telefone, endereco)
 
@@ -88,11 +67,10 @@ while True:
                 print("Informe os campos a seguir.")
 
                 while True:
-                    cnh = input("Número da CNH: ")
-
-                    if string_vazia(cnh):
-                        exibir_feedback("Número da CNH não informado.", pausar=False)
-                        continue
+                    cnh = obter_input_valido(
+                        prompt="Número da CNH: ",
+                        erro_vazio="Número da CNH não informado.",
+                    )
 
                     if len(cnh) != 11:
                         exibir_feedback(
@@ -101,23 +79,11 @@ while True:
                         continue
                     break
 
-                while True:
-                    nome = input("Nome: ")
+                nome = obter_input_valido(
+                    prompt="Nome: ", erro_vazio="Nome do entregador não informado."
+                )
 
-                    if string_vazia(nome):
-                        exibir_feedback(
-                            "Nome do entregador não informado.", pausar=False
-                        )
-                        continue
-                    break
-
-                while True:
-                    veiculo = input("Veículo: ")
-
-                    if string_vazia(veiculo):
-                        exibir_feedback("Veículo não informado.", pausar=False)
-                        continue
-                    break
+                veiculo = obter_input_valido("Veículo: ", "Veículo não informado.")
 
                 entregador_service.cadastrar(cnh, nome, veiculo)
 
@@ -126,30 +92,32 @@ while True:
             case 3:
                 print("Informe os campos relacionados a entrega.")
 
-                while True:
-                    cpf_cliente = input("Informe o CPF do cliente: ")
-
-                    if string_vazia(cpf_cliente):
-                        exibir_feedback("Informe o CPF do cliente.", pausar=False)
-                        continue
-                    break
+                cpf_cliente = obter_input_valido(
+                    prompt="Informe o CPF do cliente: ",
+                    erro_vazio="CPF do cliente não informado.",
+                )
 
                 cliente = cliente_service.encontrar_pelo_cpf(cpf_cliente)
 
-                while True:
-                    cnh_entregador = input("Informe a CNH do entregador: ")
-
-                    if string_vazia(cnh_entregador):
-                        exibir_feedback(
-                            "Informe o código da CNH do entregador.", pausar=False
-                        )
-                        continue
-                    break
+                cnh_entregador = obter_input_valido(
+                    prompt="Informe a CNH do entregador: ",
+                    erro_vazio="CNH do entregador não informado.",
+                )
 
                 entregador = entregador_service.encontrar_pela_cnh(cnh_entregador)
 
-                peso = float(input("Peso (kg): "))
-                distancia = float(input("Distância (km): "))
+                peso = float(
+                    obter_input_valido(
+                        prompt="Peso (kg): ",
+                        erro_vazio="Peso da entrega não informado.",
+                    )
+                )
+                distancia = float(
+                    obter_input_valido(
+                        prompt="Distância (km): ",
+                        erro_vazio="Distância da entrega não informada.",
+                    )
+                )
 
                 print("\nInforme o tipo de entrega.")
 
@@ -157,16 +125,21 @@ while True:
                     tipo_entrega.value for tipo_entrega in TipoEntrega
                 }
 
-                exibir_opcoes_de_entrega()
-
                 while True:
-                    opcao_tipo_de_entrega = int(input("Opção: "))
+                    exibir_opcoes_de_entrega()
+                    opcao_str = input("Opção: ")
+
+                    if string_vazia(opcao_str):
+                        exibir_feedback("Tipo de entrega não informada.", pausar=False)
+                        continue
+
+                    opcao_tipo_de_entrega = int(opcao_str)
+
                     if opcao_tipo_de_entrega not in tipo_entrega_opcoes:
                         exibir_feedback(
                             "Opção inválida para o tipo de entrega. Informe um valor correspondente.",
                             pausar=False,
                         )
-                        exibir_opcoes_de_entrega()
                         continue
                     break
 
@@ -204,12 +177,10 @@ while True:
                     )
 
                 print("")
-                while True:
-                    codigo = input("Código do pedido: ")
-                    if string_vazia(codigo):
-                        exibir_feedback("Informe o código do pedido.", pausar=False)
-                        continue
-                    break
+                codigo = obter_input_valido(
+                    prompt="Código do pedido: ",
+                    erro_vazio="Informe o código do pedido.",
+                )
 
                 pedido = pedido_service.encontrar_pedido_pelo_codigo(codigo)
 
@@ -219,7 +190,17 @@ while True:
                     print("Deseja atualizar a situação ou cancelar?")
                     print("1. Atualizar")
                     print("2. Cancelar")
-                    opcao = int(input("Opção: "))
+
+                    opcao_str = input("Opção: ")
+
+                    if string_vazia(opcao_str):
+                        exibir_feedback(
+                            "Informe se você deseja atualizar ou cancelar o pedido.",
+                            pausar=False,
+                        )
+                        continue
+
+                    opcao = int(opcao_str)
 
                     limpar_tela()
 
@@ -231,7 +212,7 @@ while True:
                         pedido_service.cancelar(pedido)
                         print(f"Pedido {codigo} cancelado.")
                     else:
-                        print("Opção inválida.")
+                        exibir_feedback("Opção inválida.", pausar=False)
                         continue
                     break
 
