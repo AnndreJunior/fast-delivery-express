@@ -1,7 +1,5 @@
-from utils.limpar_tela import limpar_tela
-from utils.proximo import proximo
 from utils.string_vazia import string_vazia
-from utils.menu import exibir_opcoes_de_entrega
+from utils.menu import exibir_opcoes_de_entrega, limpar_tela, proximo
 from utils.checar_padrao import padrao_valido
 from services import ClienteService, EntregadorService, PedidoService
 from models import TipoEntrega, PedidoStatus
